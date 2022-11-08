@@ -19,6 +19,19 @@ defmodule Fastql.Type do
     Module.put_attribute(env.module, :resolver, nil)
   end
 
+  def typ(expression, list, nullable_list) do
+    case expression do
+      {:!, _, [[nested]]} -> typ(nested, false, true)
+      [[nested]] -> typ(nested, true, false)
+      {:!, _, [name]} when is_atom(name) -> {name, false, list, nullable_list}
+      {_, _, [name]} when is_atom(name) -> {name, true, list, nullable_list}
+    end
+  end
+
+  defmacro typ(expression) do
+    result = expression |> typ(false, false) |> Macro.escape()
+  end
+
   defp parse_def(name, arity, keyword) do
     with {:ok, params} <- parse_params(keyword[:params]),
          {:ok, type} <- parse_type(keyword[:type]) do
@@ -27,22 +40,21 @@ defmodule Fastql.Type do
   end
 
   defp parse_type(nil), do: {:error, :type_required}
-  defp parse_type(type_name) when is_atom(type_name), do: {:ok, type_name}
-  defp parse_type(_), do: {:error, :invalid_type_name}
+  defp parse_type(type_name) when is_atom(type_name), do: {:ok, {type_name, true, true, false, false}}
+  defp parse_type([type_name]) when is_atom(type_name), do: {:ok, {type_name, true, true, true}}
+  defp parse_type(typ = {_, _, _, _}), do: {:ok, typ}
+  defp parse_type(_), do: {:error, :invalid_type}
 
   defp parse_params(nil), do: {:ok, []}
 
   defp parse_params(params) when is_list(params) do
     all_valid =
       params
-      |> Enum.reduce(true, fn param, acc ->
-        case param do
-          {k, v} when is_atom(k) and is_atom(v) -> true && acc
-          _ -> false
-        end
+      |> Enum.map(fn {k, v} ->
+        {:ok, type} = parse_type(v)
+        {k, type}
       end)
-
-    if all_valid, do: {:ok, params}, else: {:error, :invalid_params}
+    {:ok, all_valid}
   end
 
   defp parse_params(_params), do: {:error, :not_list}
@@ -62,6 +74,7 @@ defmodule Fastql.Type do
 
   defmacro __using__(opts) do
     quote do
+      import Fastql.Type, only: [typ: 1]
       @before_compile unquote(__MODULE__)
       @on_definition {unquote(__MODULE__), :on_def}
     end

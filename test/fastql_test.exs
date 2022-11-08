@@ -5,7 +5,7 @@ defmodule FastqlTest do
     use Fastql.Type, source_fields: [field_name: Type]
 
     # TODO: add name option
-    @resolver params: [name: String, filter: FilterType], type: String
+    @resolver params: [name: typ(![!:string]), filter: :filter], type: [String]
     def name(source, %{name: name, filter: filter}), do: nil
 
     @resolver type: :integer
