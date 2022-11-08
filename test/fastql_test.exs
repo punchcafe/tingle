@@ -4,6 +4,8 @@ defmodule FastqlTest do
 
   defmodule SampleResolver do
     use Fastql
+
+    def name(source, %{param: param}), do: nil
   end
 
   test "fastql generates resolver methods" do
