@@ -48,22 +48,21 @@ defmodule Fastql.Type do
   defp parse_params(_params), do: {:error, :not_list}
 
   defmacro __before_compile__(env) do
-    IO.inspect(Module.definitions_in(env.module, :def))
-
-    pub_funcs = Module.definitions_in(env.module, :def)
-
     quote do
-      def __resolvers__(), do: unquote(pub_funcs)
-
-      def __schema__(),
-        do: unquote(env.module |> Module.get_attribute(:__fastql_schema__, %{}) |> Macro.escape())
+      def __resolvers__(),
+        do:
+          unquote(
+            env.module
+            |> Module.get_attribute(:__fastql_schema__, %{})
+            |> Enum.to_list()
+            |> Macro.escape()
+          )
     end
   end
 
   defmacro __using__(opts) do
     quote do
       @before_compile unquote(__MODULE__)
-      # can make this optional based on keywords, if going to generate from graphqls
       @on_definition {unquote(__MODULE__), :on_def}
     end
   end
