@@ -1,7 +1,7 @@
 defmodule Fastql.Type do
   @opaque resolver_def :: {field_name :: atom, arity :: integer, function :: any}
 
-  alias Fastql.Type.Schema
+  alias Fastql.Type.Definition
 
   def on_def(env, kind, name, args, guards, body) do
     if resolver_spec = Module.get_attribute(env.module, :resolver) do
@@ -35,12 +35,15 @@ defmodule Fastql.Type do
   defp parse_def(name, arity, keyword) do
     with {:ok, params} <- parse_params(keyword[:params]),
          {:ok, type} <- parse_type(keyword[:type]) do
-      {:ok, %Schema{name: name, arity: arity, params: params, type: type}}
+      {:ok, %Definition{name: name, arity: arity, params: params, type: type}}
     end
   end
 
   defp parse_type(nil), do: {:error, :type_required}
-  defp parse_type(type_name) when is_atom(type_name), do: {:ok, {type_name, true, true, false, false}}
+
+  defp parse_type(type_name) when is_atom(type_name),
+    do: {:ok, {type_name, true, false, false}}
+
   defp parse_type([type_name]) when is_atom(type_name), do: {:ok, {type_name, true, true, true}}
   defp parse_type(typ = {_, _, _, _}), do: {:ok, typ}
   defp parse_type(_), do: {:error, :invalid_type}
@@ -54,6 +57,7 @@ defmodule Fastql.Type do
         {:ok, type} = parse_type(v)
         {k, type}
       end)
+
     {:ok, all_valid}
   end
 

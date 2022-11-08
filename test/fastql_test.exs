@@ -14,8 +14,8 @@ defmodule FastqlTest do
 
   test "fastql generates resolver methods" do
     assert SampleResolver.__resolvers__() == [
-             age: %Fastql.Type.Schema{name: :age, arity: 1, params: [], type: :integer},
-             name: %Fastql.Type.Schema{
+             age: %Fastql.Type.Definition{name: :age, arity: 1, params: [], type: :integer},
+             name: %Fastql.Type.Definition{
                name: :name,
                arity: 2,
                params: [name: String, filter: FilterType],
