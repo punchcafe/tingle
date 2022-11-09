@@ -1,7 +1,7 @@
 defmodule Fastql.Type do
   @opaque resolver_def :: {field_name :: atom, arity :: integer, function :: any}
 
-  alias Fastql.Type.Definition
+  alias Fastql.Resolver.Definition
   alias Fastql.Internal.Type
 
   require Fastql.Internal.Type
@@ -62,10 +62,13 @@ defmodule Fastql.Type do
   end
 
   defmacro __using__(opts) do
+    type_name = opts[:name] || __CALLER__.module |> inspect() |> String.split(".") |> List.last() |> Macro.underscore() |> String.to_atom()
+
     quote do
       import Fastql.Type, only: [typ: 1]
       @before_compile unquote(__MODULE__)
       @on_definition {unquote(__MODULE__), :on_def}
+      def __type_name__(), do: unquote(type_name)
     end
   end
 end
