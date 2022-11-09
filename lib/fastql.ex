@@ -2,6 +2,9 @@ defmodule Fastql.Type do
   @opaque resolver_def :: {field_name :: atom, arity :: integer, function :: any}
 
   alias Fastql.Type.Definition
+  alias Fastql.Internal.Type
+
+  require Fastql.Internal.Type
 
   def on_def(env, kind, name, args, guards, body) do
     if resolver_spec = Module.get_attribute(env.module, :resolver) do
@@ -19,34 +22,16 @@ defmodule Fastql.Type do
     Module.put_attribute(env.module, :resolver, nil)
   end
 
-  def typ(expression, list, nullable_list) do
-    case expression do
-      {:!, _, [[nested]]} -> typ(nested, false, true)
-      [[nested]] -> typ(nested, true, false)
-      {:!, _, [name]} when is_atom(name) -> {name, false, list, nullable_list}
-      {_, _, [name]} when is_atom(name) -> {name, true, list, nullable_list}
-    end
-  end
-
   defmacro typ(expression) do
-    result = expression |> typ(false, false) |> Macro.escape()
+    expression |> Type.from_ast(false, false) |> Macro.escape()
   end
 
   defp parse_def(name, arity, keyword) do
     with {:ok, params} <- parse_params(keyword[:params]),
-         {:ok, type} <- parse_type(keyword[:type]) do
+         {:ok, type} <- Type.from_term(keyword[:type]) do
       {:ok, %Definition{name: name, arity: arity, params: params, type: type}}
     end
   end
-
-  defp parse_type(nil), do: {:error, :type_required}
-
-  defp parse_type(type_name) when is_atom(type_name),
-    do: {:ok, {type_name, true, false, false}}
-
-  defp parse_type([type_name]) when is_atom(type_name), do: {:ok, {type_name, true, true, true}}
-  defp parse_type(typ = {_, _, _, _}), do: {:ok, typ}
-  defp parse_type(_), do: {:error, :invalid_type}
 
   defp parse_params(nil), do: {:ok, []}
 
@@ -54,7 +39,7 @@ defmodule Fastql.Type do
     all_valid =
       params
       |> Enum.map(fn {k, v} ->
-        {:ok, type} = parse_type(v)
+        {:ok, type} = Type.from_term(v)
         {k, type}
       end)
 
