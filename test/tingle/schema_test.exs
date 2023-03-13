@@ -1,8 +1,8 @@
 defmodule Tingle.SchemaTest do
-    use Snapshy
-    use ExUnit.Case, async: false
+  use Snapshy
+  use ExUnit.Case, async: false
 
-    alias Tingle.Schema.Type
+  alias Tingle.Schema.Type
 
   defmodule SampleSchemaResolver do
     use Tingle.Type, source_fields: [field_name: Type]

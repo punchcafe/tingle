@@ -30,7 +30,7 @@ defmodule Tingle.Schema.Type do
 
         # TODO: have this be determined through different sources, resolvers, straight from struct etc.
         resolve(fn params, ctx = %{source: source} ->
-          apply(unquote(mod_name), unquote(name),[source, params, ctx])
+          apply(unquote(mod_name), unquote(name), [source, params, ctx])
         end)
       end
     end

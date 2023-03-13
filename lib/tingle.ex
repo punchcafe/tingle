@@ -62,7 +62,14 @@ defmodule Tingle.Type do
   end
 
   defmacro __using__(opts) do
-    type_name = opts[:name] || __CALLER__.module |> inspect() |> String.split(".") |> List.last() |> Macro.underscore() |> String.to_atom()
+    type_name =
+      opts[:name] ||
+        __CALLER__.module
+        |> inspect()
+        |> String.split(".")
+        |> List.last()
+        |> Macro.underscore()
+        |> String.to_atom()
 
     quote do
       import Tingle.Type, only: [typ: 1]
