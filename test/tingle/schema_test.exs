@@ -1,4 +1,5 @@
 defmodule Tingle.SchemaTest do
+    use Snapshy
     use ExUnit.Case, async: false
 
     alias Tingle.Schema.Type
@@ -14,9 +15,7 @@ defmodule Tingle.SchemaTest do
     def age(source), do: 30
   end
 
-  test "renders a type definition in schema dsl" do
-  res = Type.schema_fragment(SampleSchemaResolver) |> Macro.to_string()
-    File.write("./.ast_output.exs", res)
-    assert res == :ok
+  test_snapshot "renders a type definition in schema dsl" do
+    Type.schema_fragment(SampleSchemaResolver) |> Macro.to_string()
   end
 end
