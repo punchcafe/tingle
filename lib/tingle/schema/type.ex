@@ -18,19 +18,32 @@ defmodule Tingle.Schema.Type do
     end
   end
 
-  defp render_field(definition = %{name: name, type: type, params: params}, mod_name) do
+  defmacro fragment({:__aliases__, _, module_names}) do
+    schema_fragment(Module.concat(module_names))
+  end
+
+  defp render_field(
+         definition = %{name: name, type: type, params: params, arity: arity},
+         mod_name
+       ) do
     params =
       params
       |> Enum.map(&render_arg/1)
       |> then(fn asts -> {:__block__, [], asts} end)
 
+    resolver_params =
+      case arity do
+        1 -> quote(do: [source])
+        2 -> quote(do: [source, params])
+        3 -> quote(do: [source, params, ctx])
+      end
+
     quote do
       field unquote(name), unquote(render_type(type)) do
         unquote(params)
 
-        # TODO: have this be determined through different sources, resolvers, straight from struct etc.
         resolve(fn params, ctx = %{source: source} ->
-          apply(unquote(mod_name), unquote(name), [source, params, ctx])
+          apply(unquote(mod_name), unquote(name), unquote(resolver_params))
         end)
       end
     end
