@@ -7,8 +7,9 @@ defmodule Tingle.Internal.Type do
             {name :: atom, element_nullable? :: atom, repeated? :: atom, list_nullable? :: atom}
 
   def from_ast(expression, list, nullable_list) do
+    IO.inspect(expression)
     case expression do
-      {:!, _, [[nested]]} -> from_ast(nested, false, true)
+      {:!, _, [[nested]]} -> from_ast(nested, true, false)
       [[nested]] -> from_ast(nested, true, false)
       {:!, _, [name]} when is_atom(name) -> {name, false, list, nullable_list}
       {_, _, [name]} when is_atom(name) -> {name, true, list, nullable_list}

@@ -1,4 +1,4 @@
-defmodule Tingle.Schema.Type do
+defmodule Tingle.Render.Type do
   @moduledoc """
   Module for rendering type definitions
   """

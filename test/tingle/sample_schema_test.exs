@@ -2,7 +2,7 @@ defmodule Tingle.SampleSchemaTest do
   use Snapshy
   use ExUnit.Case, async: false
 
-  alias Tingle.Schema.Type
+  alias Tingle.Render.Type
 
   defmodule TestType do
     use Tingle.Type, source_fields: [field_name: Type]
@@ -19,7 +19,7 @@ defmodule Tingle.SampleSchemaTest do
 
   defmodule Schema do
     use Absinthe.Schema
-    require Tingle.Schema.Type
+    require Tingle.Render.Type
 
     input_object :filter do
       field(:id, :integer)
@@ -40,7 +40,7 @@ defmodule Tingle.SampleSchemaTest do
     document = ~S"""
     query {
         test {
-            name(filter: {id: 5}, name: "hello")
+            name(filter: {id: 5}, name: ["hello"])
             age
         }
     }
