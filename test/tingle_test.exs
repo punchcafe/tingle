@@ -1,8 +1,8 @@
-defmodule FastqlTest do
+defmodule TingleTest do
   use ExUnit.Case
 
   defmodule SampleResolver do
-    use Fastql.Type, source_fields: [field_name: Type]
+    use Tingle.Type, source_fields: [field_name: Type]
 
     # TODO: add name option
     @resolver params: [name: typ(![!:string]), filter: :filter], type: [String]
@@ -12,15 +12,15 @@ defmodule FastqlTest do
     def age(source), do: 30
   end
 
-  test "fastql generates resolver methods" do
+  test "tingle generates resolver methods" do
     assert SampleResolver.__resolvers__() == [
-             age: %Fastql.Resolver.Definition{
+             age: %Tingle.Resolver.Definition{
                arity: 1,
                name: :age,
                params: [],
                type: {:integer, true, false, false}
              },
-             name: %Fastql.Resolver.Definition{
+             name: %Tingle.Resolver.Definition{
                arity: 2,
                name: :name,
                params: [

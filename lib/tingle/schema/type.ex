@@ -1,9 +1,9 @@
-defmodule Fastql.Schema.Type do
+defmodule Tingle.Schema.Type do
   @moduledoc """
   Module for rendering type definitions
   """
-  alias Fastql.Type.Definition
-  alias Fastql.Internal.Type
+  alias Tingle.Type.Definition
+  alias Tingle.Internal.Type
 
   def schema_fragment(mod) when is_atom(mod) do
     fields =

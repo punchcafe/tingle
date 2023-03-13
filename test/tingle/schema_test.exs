@@ -1,10 +1,10 @@
-defmodule Fastql.SchemaTest do
+defmodule Tingle.SchemaTest do
     use ExUnit.Case, async: false
 
-    alias Fastql.Schema.Type
+    alias Tingle.Schema.Type
 
   defmodule SampleSchemaResolver do
-    use Fastql.Type, source_fields: [field_name: Type]
+    use Tingle.Type, source_fields: [field_name: Type]
 
     # TODO: add name option
     @resolver params: [name: typ(![!:string]), filter: :filter], type: [String]

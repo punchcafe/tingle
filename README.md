@@ -1,21 +1,21 @@
-# Fastql
+# Tingle
 
 **TODO: Add description**
 
 ## Installation
 
 If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `fastql` to your list of dependencies in `mix.exs`:
+by adding `tingle` to your list of dependencies in `mix.exs`:
 
 ```elixir
 def deps do
   [
-    {:fastql, "~> 0.1.0"}
+    {:tingle, "~> 0.1.0"}
   ]
 end
 ```
 
 Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
 and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/fastql>.
+be found at <https://hexdocs.pm/tingle>.
 

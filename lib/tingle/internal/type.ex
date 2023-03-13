@@ -1,4 +1,4 @@
-defmodule Fastql.Internal.Type do
+defmodule Tingle.Internal.Type do
   @moduledoc """
   Module for handling type definitions
   """
