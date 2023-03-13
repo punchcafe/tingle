@@ -21,7 +21,8 @@ defmodule Tingle.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps(:test) do
     [
-      {:snapshy, ">= 0.3.0"}
+      {:snapshy, ">= 0.3.0"},
+      {:absinthe, ">= 0.0.0"}
     ]
   end
 
